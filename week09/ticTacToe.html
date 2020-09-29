@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TicTacToe</title>
+  <style>
+    #board {
+      width: 310px;
+    }
+    .cell {
+      display: inline-block;
+      border: 1px solid #000;
+      width: 100px;
+      height: 100px;
+      font-size: 50px;
+      line-height: 100px;
+      text-align: center;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+  <div id="board"></div>
+<script>
+  // TODO: bestChoice返回的点有问题，需要调整
+  // TODO: 五子棋
+  const pattern = [
+    0, 0, 0,
+    0, 0, 0,
+    0, 0, 0
+  ]
+  let color = 1
+
+  document.getElementById('board').addEventListener('click', function(e) {
+    const tag = e.target
+    if (tag.className === 'cell') {
+      move(tag.getAttribute('data-id'))
+    }
+  })
+
+  function show(pattern) {
+    const board = document.getElementById('board')
+    board.innerHTML = ''
+    pattern.forEach((item, index) => {
+      const cell = document.createElement('div')
+      cell.classList.add('cell')
+      cell.setAttribute('data-id', index)
+      cell.innerText = item === 2 ? '❌' :
+        item === 1 ? '⭕️' : ''
+      board.appendChild(cell)
+    })
+  }
+
+  function move(index) {
+    if (pattern[index]) return
+    pattern[index] = color
+    show(pattern)
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        if (check(pattern, color)) {
+          over()
+        }
+        color = 2 / color
+        if (willWin(pattern, color)) {
+          console.log((color === 2 ? '❌' : '⭕️') + ' will win!')
+        }
+        console.log(bestChoice(pattern, color))
+      })
+    })
+    // setTimeout(() => {
+    //   if (check()) {
+    //     over()
+    //   }
+    //   color = 2 / color
+    // }, 0)
+  }
+
+  function check(pattern, color) {
+    // 默认为false满足条件置为true需要变量存储满足条件的次数，所以以相反的方式判断win
+    let win = true
+    for (let i = 0; i < 3; i++) {
+      // 横行
+      win = true
+      for (let j = 0; j < 3; j++) {
+        if (pattern[3 * i + j] !== color) {
+          win = false
+        }
+      }
+      if (win) {
+        return true
+      }
+      // 竖列
+      win = true
+      for (let j = 0; j < 3; j++) {
+        if (pattern[i + 3 * j] !== color) {
+          win = false
+        }
+      }
+      if (win) {
+        return true
+      }
+    }
+    // 斜向
+    win = true
+    for (let i = 0; i < 3; i++) {
+      if (pattern[4 * i] !== color) {
+        win = false
+      }
+    }
+    if (win) {
+      return true
+    }
+    win = true
+    for (let i = 0; i < 3; i++) {
+      if (pattern[2 * i + 2] !== color) {
+        win = false
+      }
+    }
+    if (win) {
+      return true
+    }
+    return false
+  }
+
+  function over() {
+    alert((color === 2 ? '❌' : '⭕️') + ' is winner!')
+  }
+
+  function willWin(pattern, color) {
+    for (let i = 0; i < 9; i++) {
+      if (pattern[i]) {
+        continue
+      }
+      let tmp = Object.create(pattern)
+      tmp[i] = color
+      if (check(tmp, color)) {
+        return [i]
+      }
+    }
+    return null
+  }
+
+  function bestChoice(pattern, color) {
+    let p
+    if (p = willWin(pattern, color)) {
+      return {
+        point: p,
+        result: 1
+      }
+    }
+    let result = -2
+    let point = null
+    for (let i = 0; i < 9; i++) {
+      if (pattern[i]) {
+        continue
+      }
+      let tmp = Object.create(pattern)
+      tmp[i] = color
+      let r = bestChoice(tmp, 3 - color).result
+
+      if (-r > result) {
+        result = -r
+        point = [i]
+      }
+      if (result === 1) {
+        break
+      }
+    }
+
+    return {
+      point,
+      result: point ? result : 0
+    }
+  }
+
+  show(pattern)
+</script>
+</body>
+</html>
