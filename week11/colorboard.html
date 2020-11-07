@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="board" style="width: 100px; height: 100px;"></div>
+    <div>
+        <input id="r" type="range" min="0" max="255" value="255"><span id="rn"></span>
+    </div>
+    <div>
+        <input id="g" type="range" min="0" max="255" value="100"><span id="gn"></span>
+    </div>
+    <div>
+        <input id="b" type="range" min="0" max="255" value="34"><span id="bn"></span>
+    </div>
+    <script src="./reactive.js"></script>
+    <script>
+        let obj = {
+            r: document.getElementById('r').value,
+            g: document.getElementById('g').value,
+            b: document.getElementById('b').value
+        }
+        let po = reactive(obj)
+
+        document.getElementById('r').addEventListener('input', event => po.r = event.target.value)
+        document.getElementById('g').addEventListener('input', event => po.g = event.target.value)
+        document.getElementById('b').addEventListener('input', event => po.b = event.target.value)
+
+        effect(() => {
+            document.getElementById('rn').innerHTML = po.r
+        })
+        effect(() => {
+            document.getElementById('gn').innerHTML = po.g
+        })
+        effect(() => {
+            document.getElementById('bn').innerHTML = po.b
+        })
+
+        effect(() => {
+            document.getElementById('board').style.backgroundColor = `rgb(${po.r},${po.g},${po.b})`
+        })
+    </script>
+</body>
+</html>

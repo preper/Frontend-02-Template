@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="dragable" style="width: 100px; height: 100px; background-color: aquamarine;"></div>
+    <script>
+        let dragable = document.getElementById('dragable')
+        let base = [0, 0]
+
+        dragable.addEventListener('mousedown', event => {
+            let start = [event.clientX, event.clientY]
+
+            let move = event => {
+                dragable.style.transform = `translate(${event.clientX + base[0] - start[0]}px, ${event.clientY + base[1] - start[1]}px)`
+            }
+            let up = event => {
+                base = [event.clientX + base[0] - start[0], event.clientY + base[1] - start[1]]
+                document.removeEventListener('mousemove', move)
+                document.removeEventListener('mouseup', up)
+            }
+
+            document.addEventListener('mousemove', move)
+            document.addEventListener('mouseup', up)
+        })
+    </script>
+</body>
+</html>
