@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="el" style="width: 100px; height: 100px; background-color: aqua;"></div>
+    <div id="el2" style="width: 100px; height: 100px; background-color: aquamarine;"></div>
+    <button id="pause_button">pause</button>
+    <button id="resume_button">resume</button>
+    <script type="module">
+        import {Timeline, Animation} from './animation.js'
+        import {easeInOut} from './ease.js'
+
+        let tl= new Timeline()
+        tl.add(new Animation(document.getElementById('el').style, 'transform', 0, 500, 2000, 0, easeInOut, v => `translateX(${v}px)`))
+        document.getElementById('el2').style.transition = '2s ease-in-out'
+        document.getElementById('el2').style.transform = 'translateX(500px)'
+        tl.start()
+
+        document.getElementById('pause_button').addEventListener('click', () => tl.pause())
+        document.getElementById('resume_button').addEventListener('click', () => tl.resume())
+    </script>
+</body>
+</html>
